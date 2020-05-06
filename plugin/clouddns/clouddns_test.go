@@ -10,7 +10,7 @@ import (
 	"github.com/coredns/coredns/plugin/pkg/fall"
 	"github.com/coredns/coredns/plugin/pkg/upstream"
 	"github.com/coredns/coredns/plugin/test"
-	crequest "github.com/coredns/coredns/request"
+	"github.com/coredns/coredns/request"
 
 	"github.com/miekg/dns"
 	gcp "google.golang.org/api/dns/v1"
@@ -138,7 +138,7 @@ func TestCloudDNS(t *testing.T) {
 	r.Fall = fall.Zero
 	r.Fall.SetZonesFromArgs([]string{"gov."})
 	r.Next = test.HandlerFunc(func(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
-		state := crequest.Request{W: w, Req: r}
+		state := request.Request{W: w, Req: r}
 		qname := state.Name()
 		m := new(dns.Msg)
 		rcode := dns.RcodeServerFailure
@@ -208,12 +208,17 @@ func TestCloudDNS(t *testing.T) {
 			qtype: dns.TypeCNAME,
 			wantAnswer: []string{"sample.example.org.	300	IN	CNAME	example.org."},
 		},
+		// Disabled because of a fix going in to file plugin.
+		// This test also looks wrong, because the query is for example.org and it returns a org. answer??
+		// See https://github.com/coredns/coredns/pull/3852 and followups
 		// 5. Explicit SOA query for example.org.
-		{
-			qname: "example.org",
-			qtype: dns.TypeSOA,
-			wantAnswer: []string{"org.	300	IN	SOA	ns-cloud-e1.googledomains.com. cloud-dns-hostmaster.google.com. 1 21600 300 259200 300"},
-		},
+		/*
+			{
+				qname: "example.org",
+				qtype: dns.TypeSOA,
+				wantAnswer: []string{"org.	300	IN	SOA	ns-cloud-e1.googledomains.com. cloud-dns-hostmaster.google.com. 1 21600 300 259200 300"},
+			},
+		*/
 		// 6. Explicit SOA query for example.org.
 		{
 			qname: "example.org",
