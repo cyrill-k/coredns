@@ -2,6 +2,12 @@ module github.com/coredns/coredns
 
 go 1.13
 
+replace github.com/cyrill-k/trustflex => /home/cyrill/go/src/github.com/cyrill-k/trustflex
+
+replace github.com/cyrill-k/mapserver-coredns-plugin => /home/cyrill/go/src/github.com/cyrill-k/mapserver-coredns-plugin
+
+replace github.com/miekg/dns => /home/cyrill/go/src/github.com/cyrill-k/dns
+
 require (
 	cloud.google.com/go v0.41.0 // indirect
 	github.com/Azure/azure-sdk-for-go v32.6.0+incompatible
